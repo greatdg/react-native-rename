@@ -246,6 +246,7 @@ readFile(path.join(__dirname, 'android/app/src/main/res/values/strings.xml'))
                 javaFileBase,
                 currentJavaPath,
                 newJavaPath,
+                newDebugBundlePath,
               };
               resolve(vars);
             });
@@ -254,7 +255,15 @@ readFile(path.join(__dirname, 'android/app/src/main/res/values/strings.xml'))
         const resolveBundleIdentifiers = params =>
           new Promise(resolve => {
             let filePathsCount = 0;
-            const { currentBundleID, newBundleID, newBundlePath, javaFileBase, currentJavaPath, newJavaPath } = params;
+            const {
+              currentBundleID,
+              newBundleID,
+              newBundlePath,
+              javaFileBase,
+              currentJavaPath,
+              newJavaPath,
+              newDebugBundlePath,
+            } = params;
 
             bundleIdentifiers(
               currentAppName,
@@ -262,7 +271,8 @@ readFile(path.join(__dirname, 'android/app/src/main/res/values/strings.xml'))
               projectName,
               currentBundleID,
               newBundleID,
-              newBundlePath
+              newBundlePath,
+              newDebugBundlePath
             ).map(file => {
               filePathsCount += file.paths.length - 1;
               let itemsProcessed = 0;

@@ -1,7 +1,15 @@
 // nS - No Space
 // lC - Lowercase
 
-export function bundleIdentifiers(currentAppName, newName, projectName, currentBundleID, newBundleID, newBundlePath) {
+export function bundleIdentifiers(
+  currentAppName,
+  newName,
+  projectName,
+  currentBundleID,
+  newBundleID,
+  newBundlePath,
+  newDebugBundlePath
+) {
   const nS_CurrentAppName = currentAppName.replace(/\s/g, '');
   const nS_NewName = newName.replace(/\s/g, '');
   const lC_Ns_CurrentBundleID = currentBundleID.toLowerCase();
@@ -26,6 +34,7 @@ export function bundleIdentifiers(currentAppName, newName, projectName, currentB
         `${newBundlePath}/MainActivity.java`,
         `${newBundlePath}/MainApplication.java`,
         `${newBundlePath}/SplashActivity.java`,
+        `${newDebugBundlePath}/ReactNativeFlipper.java`,
       ],
     },
     {
