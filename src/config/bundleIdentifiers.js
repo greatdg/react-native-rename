@@ -19,13 +19,7 @@ export function bundleIdentifiers(
     {
       regex: currentBundleID,
       replacement: newBundleID,
-      paths: [
-        'android/app/BUCK',
-        'android/app/build.gradle',
-        'android/app/src/main/AndroidManifest.xml',
-        'android/fastlane/Appfile',
-        'ios/fastlane/Appfile',
-      ],
+      paths: ['android/app/_BUCK', 'android/app/build.gradle', 'android/app/src/main/AndroidManifest.xml'],
     },
     {
       regex: currentBundleID,
@@ -34,7 +28,6 @@ export function bundleIdentifiers(
         `${newBundlePath}/MainActivity.java`,
         `${newBundlePath}/MainApplication.java`,
         `${newBundlePath}/SplashActivity.java`,
-        `${newDebugBundlePath}/ReactNativeFlipper.java`,
       ],
     },
     {
@@ -54,7 +47,12 @@ export function bundleIdentifiers(
     {
       regex: currentBundleID,
       replacement: newBundleID,
-      paths: [`ios/${nS_NewName}.xcodeproj/project.pbxproj`],
+      paths: [`ios/${nS_NewName}.xcodeproj/project.pbxproj`, 'android/fastlane/Appfile', 'ios/fastlane/Appfile'],
+    },
+    {
+      regex: currentBundleID,
+      replacement: newBundleID,
+      paths: [`${newDebugBundlePath}/ReactNativeFlipper.java`],
     },
   ];
 }

@@ -49,6 +49,11 @@ const deletePreviousBundleDirectory = ({ oldBundleNameDir, shouldDelete }) => {
   if (shouldDelete) {
     const dir = oldBundleNameDir.replace(/\./g, '/');
     const deleteDirectory = shell.rm('-rf', dir);
+    console.log('dir', dir);
+
+    console.log('debug dir', dir.replace('/main/java/com', '/debug/java/com'));
+    shell.rm('-rf', dir.replace('/main/java/com', '/debug/java/com'));
+
     Promise.resolve(deleteDirectory);
     console.log('Done removing previous bundle directory.'.green);
   } else {
@@ -247,6 +252,9 @@ readFile(path.join(__dirname, 'android/app/src/main/res/values/strings.xml'))
                 currentJavaPath,
                 newJavaPath,
                 newDebugBundlePath,
+                javaDebugFileBase,
+                currentDebugJavaPath,
+                newDebugJavaPath,
               };
               resolve(vars);
             });
@@ -255,6 +263,7 @@ readFile(path.join(__dirname, 'android/app/src/main/res/values/strings.xml'))
         const resolveBundleIdentifiers = params =>
           new Promise(resolve => {
             let filePathsCount = 0;
+            let itemsProcessed = 0;
             const {
               currentBundleID,
               newBundleID,
@@ -274,28 +283,28 @@ readFile(path.join(__dirname, 'android/app/src/main/res/values/strings.xml'))
               newBundlePath,
               newDebugBundlePath
             ).map(file => {
-              filePathsCount += file.paths.length - 1;
-              let itemsProcessed = 0;
+              filePathsCount += file.paths.length;
 
               file.paths.map((filePath, index) => {
                 const newPaths = [];
+                console.log('filePath', filePath);
                 if (fs.existsSync(path.join(__dirname, filePath))) {
                   newPaths.push(path.join(__dirname, filePath));
-
-                  setTimeout(() => {
-                    itemsProcessed += index;
-                    replaceContent(file.regex, file.replacement, newPaths);
-                    if (itemsProcessed === filePathsCount) {
-                      const oldBundleNameDir = path.join(__dirname, javaFileBase, currentBundleID);
-                      resolve({
-                        oldBundleNameDir,
-                        shouldDelete: currentJavaPath !== newJavaPath,
-                      });
-                    }
-                  }, 200 * index);
+                  itemsProcessed += 1;
+                  console.log('being itemsProcessed', itemsProcessed, 'index', index);
+                  replaceContent(file.regex, file.replacement, newPaths);
                 }
               });
             });
+            console.log('itemsProcessed', itemsProcessed);
+            console.log('filePathsCount', filePathsCount);
+            if (itemsProcessed === filePathsCount) {
+              const oldBundleNameDir = path.join(__dirname, javaFileBase, currentBundleID);
+              resolve({
+                oldBundleNameDir,
+                shouldDelete: currentJavaPath !== newJavaPath,
+              });
+            }
           });
 
         const rename = () => {
