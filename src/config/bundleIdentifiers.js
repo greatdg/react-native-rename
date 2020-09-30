@@ -7,8 +7,7 @@ export function bundleIdentifiers(currentAppName, newName, projectName, currentB
   const lC_Ns_CurrentBundleID = currentBundleID.toLowerCase();
   const lC_Ns_NewBundleID = newBundleID.toLowerCase();
 
-  return [
-    {
+  return [{
       regex: currentBundleID,
       replacement: newBundleID,
       paths: ['android/app/BUCK', 'android/app/build.gradle', 'android/app/src/main/AndroidManifest.xml'],
@@ -31,6 +30,11 @@ export function bundleIdentifiers(currentAppName, newName, projectName, currentB
       regex: new RegExp(`(?!\\.)(.|^)${nS_CurrentAppName}`, 'g'),
       replacement: `$1${nS_NewName}`,
       paths: [`${newBundlePath}/MainActivity.java`],
+    },
+    {
+      regex: currentBundleID,
+      replacement: newBundleID,
+      paths: [`ios/${nS_NewName}.xcodeproj/project.pbxproj`],
     },
   ];
 }
