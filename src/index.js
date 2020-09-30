@@ -85,6 +85,7 @@ readFile(path.join(__dirname, 'android/app/src/main/res/values/strings.xml'))
         const lC_Ns_NewAppName = nS_NewName.toLowerCase();
         const bundleID = program.bundleID ? program.bundleID.toLowerCase() : null;
         let newBundlePath;
+        let newDebugBundlePath;
         const listOfFoldersAndFiles = foldersAndFiles(currentAppName, newName);
         const listOfFilesToModifyContent = filesToModifyContent(currentAppName, newName, projectName);
 
@@ -173,15 +174,24 @@ readFile(path.join(__dirname, 'android/app/src/main/res/values/strings.xml'))
               const currentBundleID = $('manifest').attr('package');
               const newBundleID = program.bundleID ? bundleID : `com.${lC_Ns_NewAppName}`;
               const javaFileBase = '/android/app/src/main/java';
+              const javaDebugFileBase = '/android/app/src/debug/java';
+
               const newJavaPath = `${javaFileBase}/${newBundleID.replace(/\./g, '/')}`;
               const currentJavaPath = `${javaFileBase}/${currentBundleID.replace(/\./g, '/')}`;
 
+              const newDebugJavaPath = `${javaDebugFileBase}/${newBundleID.replace(/\./g, '/')}`;
+              const currentDebugJavaPath = `${javaDebugFileBase}/${currentBundleID.replace(/\./g, '/')}`;
+
               if (bundleID) {
                 newBundlePath = newJavaPath;
+                newDebugBundlePath = newDebugJavaPath;
               } else {
                 newBundlePath = newBundleID.replace(/\./g, '/').toLowerCase();
                 newBundlePath = `${javaFileBase}/${newBundlePath}`;
+                newDebugBundlePath = `${javaDebugFileBase}/${newBundlePath}`;
               }
+
+              console.log(`Moving Main from ${currentJavaPath} to ${newJavaPath}`);
 
               const fullCurrentBundlePath = path.join(__dirname, currentJavaPath);
               const fullNewBundlePath = path.join(__dirname, newBundlePath);
@@ -200,6 +210,31 @@ readFile(path.join(__dirname, 'android/app/src/main/res/values/strings.xml'))
                     console.log(successMsg);
                   } else {
                     console.log(`Error moving: "${currentJavaPath}" "${newBundlePath}"`);
+                  }
+                }
+              }
+
+              console.log(`Moving Debug from ${currentDebugJavaPath} to ${newDebugBundlePath}`);
+
+              const fullCurrentDebugBundlePath = path.join(__dirname, currentDebugJavaPath);
+              const fullNewDebugBundlePath = path.join(__dirname, newDebugBundlePath);
+
+              // Create new bundle folder if doesn't exist yet
+              if (!fs.existsSync(fullNewDebugBundlePath)) {
+                shell.mkdir('-p', fullNewDebugBundlePath);
+                const move = shell.exec(
+                  `git mv "${fullCurrentDebugBundlePath}/"* "${fullNewDebugBundlePath}" 2>/dev/null`
+                );
+                const successMsg = `${newDebugBundlePath} ${colors.green('BUNDLE INDENTIFIER CHANGED')}`;
+
+                if (move.code === 0) {
+                  console.log(successMsg);
+                } else if (move.code === 128) {
+                  // if "outside repository" error occured
+                  if (shell.mv('-f', fullCurrentDebugBundlePath + '/*', fullNewDebugBundlePath).code === 0) {
+                    console.log(successMsg);
+                  } else {
+                    console.log(`Error moving: "${currentDebugJavaPath}" "${newDebugBundlePath}"`);
                   }
                 }
               }
@@ -242,7 +277,10 @@ readFile(path.join(__dirname, 'android/app/src/main/res/values/strings.xml'))
                     replaceContent(file.regex, file.replacement, newPaths);
                     if (itemsProcessed === filePathsCount) {
                       const oldBundleNameDir = path.join(__dirname, javaFileBase, currentBundleID);
-                      resolve({ oldBundleNameDir, shouldDelete: currentJavaPath !== newJavaPath });
+                      resolve({
+                        oldBundleNameDir,
+                        shouldDelete: currentJavaPath !== newJavaPath,
+                      });
                     }
                   }, 200 * index);
                 }

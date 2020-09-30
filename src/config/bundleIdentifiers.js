@@ -7,15 +7,26 @@ export function bundleIdentifiers(currentAppName, newName, projectName, currentB
   const lC_Ns_CurrentBundleID = currentBundleID.toLowerCase();
   const lC_Ns_NewBundleID = newBundleID.toLowerCase();
 
-  return [{
+  return [
+    {
       regex: currentBundleID,
       replacement: newBundleID,
-      paths: ['android/app/BUCK', 'android/app/build.gradle', 'android/app/src/main/AndroidManifest.xml'],
+      paths: [
+        'android/app/BUCK',
+        'android/app/build.gradle',
+        'android/app/src/main/AndroidManifest.xml',
+        'android/fastlane/Appfile',
+        'ios/fastlane/Appfile',
+      ],
     },
     {
       regex: currentBundleID,
       replacement: newBundleID,
-      paths: [`${newBundlePath}/MainActivity.java`, `${newBundlePath}/MainApplication.java`],
+      paths: [
+        `${newBundlePath}/MainActivity.java`,
+        `${newBundlePath}/MainApplication.java`,
+        `${newBundlePath}/SplashActivity.java`,
+      ],
     },
     {
       regex: lC_Ns_CurrentBundleID,

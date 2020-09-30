@@ -5,7 +5,8 @@ export function filesToModifyContent(currentAppName, newName) {
   const nS_CurrentAppName = currentAppName.replace(/\s/g, '');
   const nS_NewName = newName.replace(/\s/g, '');
 
-  return [{
+  return [
+    {
       regex: `<string name="app_name">${currentAppName}</string>`,
       replacement: `<string name="app_name">${newName}</string>`,
       paths: ['android/app/src/main/res/values/strings.xml'],
@@ -17,7 +18,6 @@ export function filesToModifyContent(currentAppName, newName) {
         'index.js',
         'index.android.js',
         'index.ios.js',
-        `ios/${nS_NewName}-Bridging-Header.h`
         `ios/${nS_NewName}.xcodeproj/project.pbxproj`,
         `ios/${nS_NewName}.xcworkspace/contents.xcworkspacedata`,
         `ios/${nS_NewName}.xcodeproj/xcshareddata/xcschemes/${nS_NewName}-tvOS.xcscheme`,
