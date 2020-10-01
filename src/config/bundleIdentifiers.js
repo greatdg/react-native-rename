@@ -47,7 +47,7 @@ export function bundleIdentifiers(
     {
       regex: currentBundleID,
       replacement: newBundleID,
-      paths: [`ios/${nS_NewName}.xcodeproj/project.pbxproj`, 'android/fastlane/Appfile', 'ios/fastlane/Appfile'],
+      paths: [`ios/${nS_NewName}.xcodeproj/project.pbxproj`, 'fastlane/Appfile'],
     },
     {
       regex: currentBundleID,
