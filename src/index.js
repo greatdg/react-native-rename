@@ -262,8 +262,6 @@ readFile(path.join(__dirname, 'android/app/src/main/res/values/strings.xml'))
 
         const resolveBundleIdentifiers = params =>
           new Promise(resolve => {
-            let filePathsCount = 0;
-            let itemsProcessed = 0;
             const {
               currentBundleID,
               newBundleID,
@@ -283,28 +281,21 @@ readFile(path.join(__dirname, 'android/app/src/main/res/values/strings.xml'))
               newBundlePath,
               newDebugBundlePath
             ).map(file => {
-              filePathsCount += file.paths.length;
-
-              file.paths.map((filePath, index) => {
+              file.paths.map(filePath => {
                 const newPaths = [];
                 console.log('filePath', filePath);
                 if (fs.existsSync(path.join(__dirname, filePath))) {
                   newPaths.push(path.join(__dirname, filePath));
-                  itemsProcessed += 1;
-                  console.log('being itemsProcessed', itemsProcessed, 'index', index);
                   replaceContent(file.regex, file.replacement, newPaths);
                 }
               });
             });
-            console.log('itemsProcessed', itemsProcessed);
-            console.log('filePathsCount', filePathsCount);
-            if (itemsProcessed === filePathsCount) {
-              const oldBundleNameDir = path.join(__dirname, javaFileBase, currentBundleID);
-              resolve({
-                oldBundleNameDir,
-                shouldDelete: currentJavaPath !== newJavaPath,
-              });
-            }
+
+            const oldBundleNameDir = path.join(__dirname, javaFileBase, currentBundleID);
+            resolve({
+              oldBundleNameDir,
+              shouldDelete: currentJavaPath !== newJavaPath,
+            });
           });
 
         const rename = () => {
